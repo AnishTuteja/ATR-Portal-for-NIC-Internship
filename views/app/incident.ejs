@@ -1,0 +1,286 @@
+<%- layout('layouts/boilerplate') %>
+
+<div class="col-md-10 align-items-center mt-5 mb-5">
+    <%- include('../partials/flash') %>
+
+    <h4 class="text-primary text-center">This portal is for entering non-confidential and non-secret information</h4>
+
+    <form id="iocForm" class="mb-5" action="/newIOC" method="POST">
+        <div class="d-flex justify-content-center fs-5 mb-3">
+            <input class="form-check-input mx-2 iocButtons" type="radio" name="type" id="iocFormIOC" value="IOC" checked>
+            <label class="form-check-label mx-2" for="iocFormIOC">IOC</label>
+
+            <input class="form-check-input mx-2 irButtons" type="radio" name="type" value="IR" id="iocFormIR">
+            <label class="form-check-label mx-2" for="iocFormIR">IR</label>
+
+            <input class="form-check-input mx-2 advisoryButtons" type="radio" name="type" value="Advisory" id="iocFormAdvisory">
+            <label class="form-check-label mx-2" for="iocFormAdvisory">Advisory</label>
+        </div>
+        <div>
+            <div class="card shadow">
+                <div class="card-header fw-bold fs-3 text-center text-primary bg-info-subtle">
+                    Indicator of Compromise
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-light">
+                        <h5 class="card-title mb-3 fw-bold">Reported By</h5>
+                        <div class="row justify-content-around mb-3">
+                            <div class="col-md-8">
+                                <label for="iocFormAgency" class="form-label"><span class="text-danger"><sup>*</sup></span> Agency</label>
+                                <select id="iocFormAgency" class="form-select" name="agency">
+                                    <option value="" disabled selected hidden>Select Agency</option>
+                                    <option value="NIC">NIC</option>
+                                    <option value="MHA">MHA</option>
+                                    <option value="IB">IB</option>
+                                    <option value="NCIIPC">NCIIPC</option>
+                                    <option value="CERT-In">CERT-In</option>
+                                </select>
+                                <div class="invalid-feedback">Missing field</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="iocFormReferenceId" class="form-label"><span class="text-danger"><sup>*</sup></span> Reference ID</label>
+                                <input type="text" class="form-control" id="iocFormReferenceId" name="referenceId">
+                                <div class="invalid-feedback">Missing field</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item bg-light">
+                        <h5 class="card-title mb-3 fw-bold">Meta Information</h5>
+                        <div class="row justify-content-around mb-3">
+                            <div class="col-md-4">
+                                <label for="iocFormTLP" class="form-label"><span class="text-danger"><sup>*</sup></span> TLP</label>
+                                <select name="TLP" id="iocFormTLP" class="form-select">
+                                    <option value="" disabled hidden selected>Select TLP</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                                <div class="invalid-feedback">Missing field</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="iocFormConfidence" class="form-label"><span class="text-danger"><sup>*</sup></span> Confidence</label>
+                                <select name="confidence" id="iocFormConfidence" class="form-select">
+                                    <option value="" disabled hidden selected>Select Confidence</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                                <div class="invalid-feedback">Missing field</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="iocFormRisk" class="form-label"><span class="text-danger"><sup>*</sup></span> Risk</label>
+                                <select name="risk" id="iocFormRisk" class="form-select">
+                                    <option value="" disabled hidden selected>Select Risk</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                                <div class="invalid-feedback">Missing field</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item bg-light">
+                        <h5 class="card-title mb-3 text-danger fw-bold">Atleast one field is required out of the following three</h5>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="iocFormIP" class="form-label">IP Address <span class="text-success">(Comma Separated upto 100 IPs)</span></label>
+                                <input type="text" class="form-control" id="iocFormIP" name="IP" placeholder="Example: 127.0.0.1, 127.0.0.2">
+                                <div class="invalid-feedback" id="iocFormIPFeedback"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="iocFormURL" class="form-label">URL/Domain<span class="text-success">(Comma Separated upto 100 URLs)</span></label>
+                                <input type="text" class="form-control" id="iocFormURL" name="URL" placeholder="Example: www.google.com, www.facebook.com">
+                                <div class="invalid-feedback" id="iocFormURLFeedback"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="iocFormHASH" class="form-label">HASH <span class="text-success">(Comma Separated upto 100 HASHs)</span></label>
+                                <input type="text" class="form-control" id="iocFormHASH" name="HASH">
+                                <div class="invalid-feedback">Missing field</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item bg-light">
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="iocFormDetails" class="form-label"><span class="text-danger"><sup>*</sup></span> Details</label>
+                                <textarea class="form-control" id="iocFormDetails" name="details"></textarea>
+                                <div class="invalid-feedback">Missing field</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="iocFormFile" class="form-label">Attach File <span class="text-success">(Upload Only .pdf and Maxsize: 1MB)</span></label>
+                                <div class="row justify-content-start">
+                                    <div class=" col-md-10">
+                                        <input class="form-control" type="file" id="iocFormFile">
+                                        <div class="invalid-feedback" id="iocFormFileFeedback"></div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-danger" id="iocFormRemoveFileButton">Remove File</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success" id="iocFormSubmitButton">Submit</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </form>
+    <form id="irForm" class="mb-5" method="POST" action="/newIR">
+        <div class="d-flex justify-content-center fs-5 mb-3">
+            <input class="form-check-input mx-2 iocButtons" type="radio" name="type" id="irFormIOC" value="IOC">
+            <label class="form-check-label mx-2" for="irFormIOC">
+                IOC
+            </label>
+
+            <input class="form-check-input mx-2 irButtons" type="radio" name="type" class="irButtons" id="irFormIR" value="IR" checked>
+            <label class="form-check-label mx-2" for="irFormIR">
+                IR
+            </label>
+
+            <input class="form-check-input mx-2 advisoryButtons" type="radio" name="type" class="advisoryButtons" value="Advisory" id="irFormAdvisory">
+            <label class="form-check-label mx-2" for="irFormAdvisory">
+                Advisory
+            </label>
+        </div>
+        <div class="card shadow">
+            <div class="card-header fw-bold fs-3 text-center text-primary bg-info-subtle">
+                Incident Reporting
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item bg-light">
+                    <h5 class="card-title mb-3 fw-bold">Type</h5>
+                    <div class="row justify-content-around mb-3">
+                        <div class="col">
+                            <label for="irFormType" class="form-label"><span class="text-danger"><sup>*</sup></span> Type</label>
+                            <select id="irFormType" class="form-select" name="Type">
+                                <option value="" selected disabled hidden>Select Type</option>
+                                <option value="Data Leak">Data Leak</option>
+                                <option value="Malicious Activity">Malicious Activity</option>
+                                <option value="Phishing Attacks">Phishing Attacks</option>
+                                <option value="Unauthorised access of IT systems/Data/Social Media Accounts">Unauthorised access of IT systems/Data/Social Media Accounts</option>
+                                <option value="Others">Others</option>
+                            </select>
+                            <div class="invalid-feedback">Missing field</div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item bg-light">
+                    <h5 class="card-title mb-3 text-danger fw-bold">Atleast one field is required out of the following two </h5>
+                    <div class="col">
+                        <div class="mb-3">
+                            <label for="irFormIP" class="form-label">IP Address <span class="text-success">(Comma Separated upto 100 IPs)</span></label>
+                            <input type="text" class="form-control" id="irFormIP" placeholder="Example: 127.0.0.1, 127.0.0.2" name="IP">
+                            <div class="invalid-feedback" id="irFormIPFeedback">Missing field</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="irFormURL" class="form-label">URL/Domain <span class="text-success">(Comma Separated upto 100 IPs)</span></label>
+                            <input type="text" class="form-control" id="irFormURL" name="URL" placeholder="Example: www.google.com, www.facebook.com">
+                            <div class="invalid-feedback" id="irFormURLFeedback">Missing field</div>
+                        </div>
+                    </div>
+                </li>
+                <li class=" list-group-item bg-light">
+                    <div class="col">
+                        <div class="mb-3">
+                            <label for="irFormDetails" class="form-label"><span class="text-danger"><sup>*</sup></span> Details</label>
+                            <textarea class="form-control" id="irFormDetails" name="details"></textarea>
+                            <div class="invalid-feedback">Missing field</div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="row justify-content-start">
+                                <div class=" col-md-10">
+                                    <input class="form-control" type="file" id="irFormFile">
+                                    <div class="invalid-feedback" id="irFormFileFeedback"></div>
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-danger" id="irFormRemoveFileButton">Remove File</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">Submit</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+    <form id="advisoryForm" class="mb-5" action="/newAdvisory" method="POST">
+        <div class="d-flex justify-content-center fs-5 mb-3">
+            <input class="form-check-input mx-2 iocButtons" type="radio" name="type" id="advisoryFormIOC">
+            <label class="form-check-label mx-2" for="advisoryFormIOC">
+                IOC
+            </label>
+
+            <input class="form-check-input mx-2 irButtons" type="radio" name="type" class="irButtons" id="advisoryFormIR">
+            <label class="form-check-label mx-2" for="advisoryFormIR">
+                IR
+            </label>
+
+            <input class="form-check-input mx-2 advisoryButtons" type="radio" name="type" class="advisoryButtons" id="advisoryFormAdvisory" value="Advisory" checked>
+            <label class="form-check-label mx-2" for="advisoryFormAdvisory">
+                Advisory
+            </label>
+        </div>
+        <div>
+            <div class="card shadow">
+                <div class="card-header fw-bold fs-3 text-center text-primary bg-info-subtle">
+                    Advisory
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-light">
+                        <h5 class="card-title mb-3 fw-bold">Reported By</h5>
+                        <div class="row justify-content-around mb-3">
+                            <div class="col-md-8">
+                                <label for="advisoryFormAgency" class="form-label"><span class="text-danger"><sup>*</sup></span>Agency</label>
+                                <select id="advisoryFormAgency" class="form-select" name="agency">
+                                    <option value="" selected hidden disabled>Select Agency</option>
+                                    <option value="NIC">NIC</option>
+                                    <option value="MHA">MHA</option>
+                                    <option value="IB">IB</option>
+                                    <option value="NCIIPC">NCIIPC</option>
+                                    <option value="CERT-In">CERT-In</option>
+                                </select>
+                                <div class="invalid-feedback">Missing field</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="advisoryFormReferenceId" class="form-label"><span class="text-danger"><sup>*</sup></span> Reference ID</label>
+                                <input type="text" class="form-control" id="advisoryFormReferenceId" name="referenceId">
+                                <div class="invalid-feedback">Missing field</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item bg-light">
+                        <div class="col mb-3">
+                            <label for="advisoryFormTitle" class="form-label"><span class="text-danger"><sup>*</sup></span> Title</label>
+                            <input type="text" class="form-control" id="advisoryFormTitle" name="title">
+                        </div>
+                    </li>
+                    <li class="list-group-item bg-light">
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="advisoryFormDetails" class="form-label"><span class="text-danger"><sup>*</sup></span> Details</label>
+                                <textarea class="form-control" id="advisoryFormDetails" name="details"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <div class="row justify-content-start">
+                                    <div class=" col-md-10">
+                                        <input class="form-control" type="file" id="advisoryFormFile">
+                                        <div class="invalid-feedback" id="advisoryFormFileFeedback"></div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-danger" id="advisoryFormRemoveFileButton">Remove File</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success">Submit</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </form>
+    <script src="/javascripts/incident.js"></script>
+    <script src="/javascripts/clientSideFormValidations/validators.js"></script>
+    <script src="/javascripts/clientSideFormValidations/IOCForm.js"></script>
+    <script src="/javascripts/clientSideFormValidations/IRForm.js"></script>
+    <script src="/javascripts/clientSideFormValidations/Advisory.js"></script>
+</div>

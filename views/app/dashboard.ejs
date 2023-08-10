@@ -1,0 +1,60 @@
+<%- layout('layouts/boilerplate') %>
+
+<div class="col mt-5">
+    <%- include('../partials/flash') %>
+    <div class="card shadow mb-3">
+        <div class="card-header fw-bold fs-3 text-center text-primary bg-info-subtle">
+            Dashboard
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card shadow">
+                        <div class="card-header fw-bold text-center fs-5">
+                            Incident Type
+                        </div>
+                        <div class="card-body">
+                            <canvas id="incidentType"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card shadow">
+                        <div class="card-header fw-bold text-center fs-5">
+                            Alert Shared By Agency
+                        </div>
+                        <div class="card-body">
+                            <canvas id="agencyCount"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-10 offset-md-1">
+                    <div class="card shadow">
+                        <div class="card-header fw-bold text-center fs-5">
+                            IR Type Count
+                        </div>
+                        <div class="card-body">
+                            <canvas id="IRTypeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.js" integrity="sha512-7GMwfb+7/uM9Iwmev3P5x7u/ZuyyoFgWIEaL+OkGW1lXy2Yp0/v0WQMyI7PzJj2fxocOHPiEhptcQtVPP5VPqA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+<script src="../javascripts/makeChart.js"> </script>
+<script>
+    const navLink = document.getElementsByClassName('nav_link');
+    for (let i = 0; i < navLink.length; ++i) {
+        if (Array.from(navLink[i].classList).includes('active'))
+            navLink[i].classList.toggle('active');
+    }
+    navLink[2].classList.add('active')
+</script>

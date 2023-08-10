@@ -1,0 +1,170 @@
+<%- layout('layouts/boilerplate') %>
+
+<div class="col mt-5">
+    <%- include('../partials/flash') %>
+    <div class="card shadow mb-3">
+        <div class="card-header fw-bold fs-3 text-center text-primary bg-info-subtle">
+            Track Status
+        </div>
+        <div class="card-body">
+            <table class="table table-sm table-striped" id="dataTable">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Reference ID</th>
+                        <th>Ticket ID</th>
+                        <% if(currentUser.agency === 'NIC') { %>
+                        <th>
+                            <select class="form-select form-select-sm" onchange="filterTableAgency(this.value);">
+                                <option selected hidden disabled>Ministry</option>
+                                <option value="all">ALL</option>
+                                <option value="NIC">NIC</option>
+                                <option value="MHA">MHA</option>
+                                <option value="IB">IB</option>
+                                <option value="NCIIPC">NCIIPC</option>
+                                <option value="CERT-In">CERT-In</option>
+                            </select>
+                        </th>
+                        <% } else { %>
+                        <th>Ministry</th>
+                        <% } %>
+                        <th>
+                            <select class="form-select form-select-sm" onchange="filterTableType(this.value);">
+                                <option selected hidden disabled>Type</option>
+                                <option value="all">ALL</option>
+                                <option value="IOC">IOC</option>
+                                <option value="IR">IR</option>
+                                <option value="Advisory">Advisory</option>
+                            </select>
+                        </th>
+                        <th>Files</th>
+                        <th style="width:300px">Remarks</th>
+                        <th>Created At</th>
+                        <th>
+                            <select class="form-select form-select-sm" onchange="filterTableStatus(this.value);">
+                                <option selected disabled hidden>Status</option>
+                                <option value="all">ALL</option>
+                                <option value="Pending">Pending</option>
+                                <option value="In-process">In-process</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(let i=0;  i < incidentRequestDataInstance.length ; ++i) { %>
+                    <tr>
+                        <td><%= incidentRequestDataInstance[i].referenceId %></td>
+                        <td></td>
+                        <td><%= incidentRequestDataInstance[i].agency %></td>
+                        <td><%= incidentRequestDataInstance[i].type %></td>
+                        <td></td>
+                        <td><%= incidentRequestDataInstance[i].details %></td>
+                        <td><%= incidentRequestDataInstance[i].date %></td>
+                        <td><%= incidentRequestDataInstance[i].currStatus %></td>
+                        <td>
+                            <div class=" d-flex justify-content-around">
+                                <a href="/view/<%= incidentRequestDataInstance[i]._id %>" class="btn btn-sm btn-primary">View</a>
+                                <% if(incidentRequestDataInstance[i].currStatus === 'Completed') { %>
+                                <button class="btn btn-sm btn-warning" disabled>Reply</button>
+                                <% } else {%>
+                                <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="<%= ('#replyModal' + i) %>">Reply</button>
+
+                                <div class="modal fade" id="<%= ('replyModal' + i) %>" tabindex="-1" aria-labelledby="replyModal" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="replyModalLabel">New Reply</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="mt-3">
+                                                <%  if(currentUser.agency === 'NIC') { %>
+                                                <div class="dropdown mx-2" id="changeStatusDropdown">
+                                                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        Change Status
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item" href="<%= `/changeStatus/${incidentRequestDataInstance[i]._id}/In-process` %>">In-process</a></li>
+                                                        <li><a class=" dropdown-item" href="<%= `/changeStatus/${incidentRequestDataInstance[i]._id}/Completed` %>">Completed</a></li>
+                                                    </ul>
+                                                </div>
+                                                <% } %>
+                                            </div>
+                                            <form action="/reply/<%= incidentRequestDataInstance[i]._id %>" method="POST">
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label for="message-text" class="col-form-label">Reply:</label>
+                                                        <textarea class="form-control" id="message-text" name="replyText"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Reply</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <% } %>
+                                <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="<%= ('#historyModal' + i) %>" )">History</button>
+
+                                <div class="modal fade" id="<%= ('historyModal' + i) %>" tabindex="-1" aria-labelledby="historyModal" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="historyModalLabel">History</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <% for(let j=0; j < incidentRequestDataInstance[i].reply.length; ++j) { %>
+                                                <div class="<%= (incidentRequestDataInstance[i].reply[j].sender === currentUser.agency) ? 'bg-success-subtle' : 'bg-info-subtle'%> d-flex flex-column">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="fs-5">
+                                                            <%= incidentRequestDataInstance[i].reply[j].sender %> :
+                                                        </div>
+                                                        <div class="text-muted fst-italic">
+                                                            <%= incidentRequestDataInstance[i].reply[j].dateOfReply %>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <%= incidentRequestDataInstance[i].reply[j].replyText %>
+                                                    </div>
+                                                </div>
+                                                <% } %>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="d-flex justify-content-end">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item <%= pageNumber === '1' ? 'disabled' : '' %>"><a class="page-link" href="/trackstatus/<%= (parseInt(pageNumber) - 1) %>" disabled>Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#"><%= parseInt(pageNumber) %></a></li>
+                <li class="page-item"><a class="page-link" href="/trackstatus/<%= (parseInt(pageNumber) + 1) %>">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<script>
+    const navLink = document.getElementsByClassName('nav_link');
+    for (let i = 0; i < navLink.length; ++i) {
+        if (Array.from(navLink[i].classList).includes('active'))
+            navLink[i].classList.toggle('active');
+    }
+    navLink[1].classList.add('active')
+</script>
+<script src=" /javascripts/filterTable.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
