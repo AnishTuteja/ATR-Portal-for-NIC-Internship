@@ -37,5 +37,5 @@ This project was developed for National Informatics Center, Govt. Of India as a 
 
 ## Screenshots
 
-![App Screenshot](https://drive.google.com/file/d/1O9RdKalc_LFU8AXQw47s3AGpNrTBokQs/view?usp=sharing)
+![App Screenshot](image.png)
 
