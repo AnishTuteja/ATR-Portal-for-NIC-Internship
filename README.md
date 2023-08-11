@@ -36,6 +36,6 @@ This project was developed for National Informatics Center, Govt. Of India as a 
 
 
 ## Screenshots
-
-![App Screenshot](image.png)
+#### Page to issue a ticket
+![App Screenshot](screenshots/ioc.png)
 
